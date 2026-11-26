@@ -20,15 +20,11 @@ O código principal em [`main.py`](main.py) carrega o arquivo de entrada, chama 
 
 A função `interpolar_dados` cria uma nova grade temporal com intervalo de 1/4000 s e interpola cada canal usando `numpy.interp`. O resultado é salvo em [`item_a/ECG_XYZ_4000Hz.csv`](item_a/ECG_XYZ_4000Hz.csv).
 
-A função `plotar_sinal_ecg` gera o gráfico dos canais interpolados no intervalo de 180 a 190 segundos (3:00 a 3:10), usando um subplot e uma cor diferente para cada canal. O gráfico é salvo em [`item_a/ECG_03-00_a_03-10.svg`](item_a/ECG_03-00_a_03-10.svg).
+A função `plotar_sinal_ecg` gera, no intervalo de 180 a 190 segundos (3:00 a 3:10), um subplot por canal com o sinal original e o interpolado sobrepostos. Os sinais de cada canal compartilham uma cor; marcadores circulares maiores mostram as amostras originais, e a linha contínua mostra o sinal interpolado. A legenda indica a frequência de cada sinal. O gráfico é salvo como PNG a 220 dpi em [`item_a/ECG_03-00_a_03-10.png`](item_a/ECG_03-00_a_03-10.png).
 
 #### Gráfico gerado
 
-![Gráfico dos canais de ECG interpolados entre 3:00 e 3:10](item_a/ECG_03-00_a_03-10.svg)
-
-### Observação sobre o enunciado
-
-O gráfico atualmente gerado apresenta os canais interpolados. O enunciado também solicita mostrar ambos os sinais — original e interpolado — e marcar as amostras. Essas duas partes ainda não estão representadas no gráfico atual.
+![Comparação dos canais originais e interpolados de ECG entre 3:00 e 3:10](item_a/ECG_03-00_a_03-10.png)
 
 ## Item b
 

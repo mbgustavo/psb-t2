@@ -13,7 +13,14 @@ dados_interpolados = utils_a.interpolar_dados(dados, arquivo_entrada, frequencia
 dados_interpolados.to_csv(arquivo_saida, index=False)
 print(f"Sinal interpolado salvo em: {arquivo_saida}")
 
-arquivo_grafico = "item_a/ECG_03-00_a_03-10.svg"
+arquivo_grafico = "item_a/ECG_03-00_a_03-10.png"
 inicio_grafico = 180  # segundos (3:00)
 fim_grafico = 190  # segundos (3:10)
-utils_a.plotar_sinal_ecg(inicio_grafico, fim_grafico, frequencia_nova, dados_interpolados, arquivo_grafico)
+utils_a.plotar_sinal_ecg(
+    inicio_grafico,
+    fim_grafico,
+    frequencia_nova,
+    dados,
+    dados_interpolados,
+    arquivo_grafico,
+)
