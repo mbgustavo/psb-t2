@@ -4,98 +4,68 @@
 
 A partir do [sinal de ECG de três canais, X, Y e Z simultâneos](<ECG_XYZ.txt(fs=1000Hz)>), dado em aula com cinco (5) minutos de duração e amostrado a 1000 amostras/seg., desenvolva os algoritmos e faça as implementações para realizar as seguintes operações:
 
-## Item a
+## Item a — Interpolação do sinal
 
 > Interpole o sinal original para 4000 amostras/s. Fazer o gráfico para ambos os sinais no intervalo de 3:00 a 3:10 minutos (marcando as amostras).
 
-### Dados de entrada
+### Metodologia
 
-Foi utilizado o arquivo [`ECG_XYZ.txt(fs=1000Hz)`](<ECG_XYZ.txt(fs=1000Hz)>), que contém as amostras do ECG original e a coluna `SamplingInterval`, com o tempo em segundos. A frequência original indicada no arquivo é 1000 amostras/s.
+O sinal foi interpolado para uma frequência de amostragem de 4000 amostras por segundo, preservando a duração do registro. A interpolação linear foi calculada com a biblioteca NumPy. Para comparar os sinais, foi selecionado o intervalo entre 3:00 e 3:10 minutos. Os três canais foram apresentados em gráficos separados, com as amostras originais marcadas e o sinal interpolado sobreposto.
 
-### O que foi implementado
+### Resultado e análise
 
-O código principal em [`main.py`](main.py) carrega o arquivo de entrada, chama as funções do item a e coordena a gravação dos resultados. As funções de interpolação e plotagem estão em [`item_a/utils.py`](item_a/utils.py).
-
-A função `interpolar_dados` cria uma nova grade temporal com intervalo de 1/4000 s e interpola cada canal usando `numpy.interp`. O resultado é salvo em [`item_a/ECG_XYZ_4000Hz.csv`](item_a/ECG_XYZ_4000Hz.csv).
-
-A função `plotar_sinal_ecg` gera, no intervalo de 180 a 190 segundos (3:00 a 3:10), um subplot por canal com o sinal original e o interpolado sobrepostos. Os sinais de cada canal compartilham uma cor; marcadores circulares maiores mostram as amostras originais, e a linha contínua mostra o sinal interpolado. A legenda indica a frequência de cada sinal. O gráfico é salvo como PNG a 220 dpi em [`item_a/ECG_03-00_a_03-10.png`](item_a/ECG_03-00_a_03-10.png).
-
-#### Gráfico gerado
+A interpolação fornece uma representação temporal mais densa do ECG, mantendo visíveis as amostras do registro original para comparação. O gráfico permite observar os canais no intervalo solicitado e verificar visualmente como a interpolação representa o sinal entre as amostras originais.
 
 ![Comparação dos canais originais e interpolados de ECG entre 3:00 e 3:10](item_a/ECG_03-00_a_03-10.png)
 
-## Item b
+## Item b — Detecção, alinhamento e média dos complexos PQRST
 
 > Desenvolva um algoritmo para detectar cada batimento, enquadrar, alinhar e promediar o complexo PQRST; apresentando o sinal promediado, número de complexos incluídos na promediação, número de rejeitados, estimativa do ruído residual, calcular o vetor magnitude utilizando as seguintes frequências passa-alta em 25, 40 e 80 Hz.
 
-### Dados de entrada
+### Metodologia
 
-O sinal de entrada do item b é o resultado interpolado do item a, [`item_a/ECG_XYZ_4000Hz.csv`](item_a/ECG_XYZ_4000Hz.csv), com frequência de amostragem definida explicitamente como 4000 Hz em [`main.py`](main.py). Os canais ortogonais considerados são `ChXGain5000`, `ChYGain5000` e `ChZGain5000`; a coluna `RefChXGain1000Inverted` é uma referência e não entra no cálculo do vetor magnitude.
+A análise foi realizada sobre o sinal interpolado a 4000 amostras por segundo. A filtragem digital e a detecção de picos foram realizadas com SciPy, e os cálculos numéricos multicanais com NumPy. Para localizar os batimentos, o canal Y foi filtrado por um filtro Butterworth passa-banda de fase nula, de ordem 3 e frequências de corte de 5 e 25 Hz. A detecção exigiu uma distância mínima de 400 ms entre picos e uma proeminência de pelo menos dois desvios-padrão. Para cada pico R, foi extraída uma janela de 250 ms antes e 550 ms depois do pico. Janelas incompletas nas bordas do registro foram rejeitadas.
 
-### Método implementado
+Para reduzir a influência de batimentos discrepantes, cada janela multicanal foi centralizada e normalizada, e sua correlação com um molde mediano foi calculada. Foram aceitos os complexos com correlação de pelo menos 0,90 e acima do limite inferior definido pelo critério de Tukey. Como as janelas são referenciadas ao pico R, os complexos ficam alinhados temporalmente; a média dos complexos aceitos forma o sinal promediado. O ruído residual foi estimado pelo RMS da diferença entre cada complexo aceito e o complexo médio, separadamente para cada canal.
 
-As funções do item estão em [`item_b/utils.py`](item_b/utils.py), e o encadeamento da análise e a gravação das saídas são feitos diretamente por [`main.py`](main.py). Para localizar os batimentos, o canal Y recebe um filtro Butterworth passa-banda com fase nula. A ordem dos filtros passa-banda e passa-alta é parametrizável e tem valor padrão 3. Na detecção, os cortes do passa-banda (5 e 25 Hz), o intervalo mínimo entre picos (400 ms) e o fator de proeminência (2 desvios-padrão) também são parâmetros com esses valores como padrão.
+Para obter os vetores magnitude, foram aplicados filtros Butterworth passa-alta de ordem 3 e fase nula, com frequências de corte de 25, 40 e 80 Hz, aos três canais. Em cada frequência, os complexos filtrados foram promediados e combinados amostra a amostra pelo cálculo da raiz da soma dos quadrados dos três canais.
 
-Cada batimento é enquadrado de 250 ms antes a 550 ms depois do pico R. Como os recortes são centrados no máximo R do sinal filtrado, ficam temporalmente alinhados. Os batimentos sem janela completa são rejeitados. Para a rejeição morfológica, cada janela multicanal é centralizada, normalizada e correlacionada com o molde mediano; são aceitas correlações de pelo menos 0,90 e acima do limite inferior de Tukey. O limite mínimo de correlação é parametrizável, com valor padrão 0,90. O complexo promediado é a média amostral dos complexos aceitos.
+### Resultados e análise
 
-A estimativa de ruído residual é o valor RMS da diferença entre cada complexo aceito e o complexo médio, calculada separadamente para X, Y e Z. Para cada corte de 25, 40 e 80 Hz, os três canais recebem um passa-alta Butterworth de ordem 3 com fase nula; os complexos aceitos são novamente promediados e o vetor magnitude é calculado como `sqrt(X² + Y² + Z²)` em cada amostra.
+Foram detectados 293 complexos. Desses, 281 foram incluídos na média e 12 rejeitados: um por estar incompleto na borda do registro e 11 por divergência morfológica. Os RMS residuais foram 0,1059 no canal X, 0,2142 no canal Y e 0,1058 no canal Z. O canal Y apresentou o maior resíduo entre os três canais.
 
-### Resultados gerados
-
-A execução atual, sobre os dados interpolados a 4000 Hz, detectou 293 complexos, dos quais 281 foram incluídos na promediação e 12 rejeitados (1 por borda e 11 por morfologia). Os RMS residuais foram 0,1059 no canal X, 0,2142 no canal Y e 0,1058 no canal Z. Esses valores e as contagens completas estão em [`item_b/resumo_item_b.csv`](item_b/resumo_item_b.csv).
-
-- [`item_b/complexo_pqrst_promediado.csv`](item_b/complexo_pqrst_promediado.csv): sinal médio dos canais X, Y e Z, com o tempo relativo ao pico R.
-- [`item_b/vetores_magnitude.csv`](item_b/vetores_magnitude.csv): vetores magnitude médios para os passa-altas de 25, 40 e 80 Hz.
-- [`item_b/complexo_pqrst_promediado.png`](item_b/complexo_pqrst_promediado.png): gráfico dos complexos PQRST médios e respectivos RMS residuais.
-- [`item_b/vetores_magnitude_passa_alta.png`](item_b/vetores_magnitude_passa_alta.png): comparação gráfica dos três vetores magnitude.
-
-#### Gráficos gerados
+Os gráficos mostram o complexo PQRST médio, os resíduos por canal e os vetores magnitude obtidos com os três cortes passa-alta. A comparação entre as frequências permite observar como o conteúdo do vetor magnitude muda conforme componentes de frequências mais baixas são removidos pelo filtro.
 
 ![Complexos PQRST promediados](item_b/complexo_pqrst_promediado.png)
 
 ![Vetores magnitude com filtros passa-alta](item_b/vetores_magnitude_passa_alta.png)
 
-### Dependência adicionada
-
-Foi adicionada a dependência `scipy` em [`requirements.txt`](requirements.txt) para os filtros digitais Butterworth e a detecção de picos.
-
-## Item c
+## Item c — Intervalos RR
 
 > Determine em milissegundos todos os intervalos RR consecutivos do registro e faça o gráfico RR x Tempo.
 
-### Dados de entrada
+### Metodologia
 
-Foram utilizados os picos R detectados no item b a partir do sinal interpolado a 4000 Hz. Os instantes dos picos são obtidos na coluna `SamplingInterval` de `dados_interpolados` em [`main.py`](main.py).
+Foram usados os picos R detectados no item b. Para cada par de picos consecutivos, calculou-se a diferença temporal em milissegundos. Cada intervalo foi associado ao ponto médio entre os instantes dos dois picos delimitadores para compor o gráfico RR em função do tempo.
 
-### O que foi implementado
+### Resultados e análise
 
-As funções específicas estão em [`item_c/utils.py`](item_c/utils.py). A função `calcular_intervalos_rr` calcula a diferença entre cada par consecutivo de picos R e converte o resultado para milissegundos. Cada intervalo é associado ao ponto médio temporal entre seus dois picos delimitadores, o que é usado no gráfico RR x Tempo produzido por `plotar_intervalos_rr`.
-
-### Resultados gerados
-
-Foram calculados 292 intervalos RR a partir dos 293 picos detectados no item b. Os valores variam de 705,25 ms a 1294,75 ms.
-
-- [`item_c/intervalos_rr.csv`](item_c/intervalos_rr.csv): tempos inicial, final e médio de cada par de picos, além do intervalo RR em milissegundos.
-- [`item_c/RR_x_Tempo.png`](item_c/RR_x_Tempo.png): gráfico de todos os intervalos RR consecutivos em função do tempo.
-
-#### Gráfico gerado
+Foram calculados 292 intervalos RR a partir dos 293 picos detectados. Os intervalos variaram de 705,25 ms a 1294,75 ms. O gráfico apresenta a evolução dos intervalos ao longo do registro e permite visualizar a variabilidade temporal entre batimentos consecutivos.
 
 ![Intervalos RR consecutivos em função do tempo](item_c/RR_x_Tempo.png)
 
 ## Item d
 
+Ainda não implementado.
+
 ## Item e
+
+Ainda não implementado.
 
 ## Item f
 
+Ainda não implementado.
+
 ## Item g
 
-## Padrões do repositório
-
-As instruções para organização do código, documentação das funções e atualização deste relatório estão registradas em [`AGENTS.md`](AGENTS.md).
-
-A skill [`python-to-colab-notebook`](.agents/skills/python-to-colab-notebook/SKILL.md) orienta a conversão do código para um notebook do Google Colab, com as funções de cada item separadas das células de execução e os gráficos exibidos diretamente no notebook.
-
-A skill [`update-python-from-notebook`](.agents/skills/update-python-from-notebook/SKILL.md) orienta a sincronização das mudanças funcionais do notebook de volta aos módulos Python, ignorando adaptações exclusivas do Colab.
-
-A documentação do projeto, incluindo os textos explicativos dos notebooks, deve ser mantida em português.
+Ainda não implementado.

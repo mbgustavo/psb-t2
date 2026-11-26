@@ -18,9 +18,9 @@
 ## Relatório
 
 - Toda implementação ou alteração funcional deve ser registrada em `RELATORIO.md`.
-- Siga a estrutura atual do relatório: mantenha o enunciado geral do item 1, documente cada item em sua própria seção e organize detalhes como dados de entrada, implementação, arquivos gerados e observações em subseções do item correspondente.
-- Consulte o enunciado no PDF e descreva com precisão o que foi implementado. Registre limitações ou partes do enunciado ainda não atendidas; não apresente como concluído o que os arquivos atuais não realizam.
-- Inclua referências aos arquivos de código, dados de entrada e resultados relevantes. Atualize o relatório quando esses arquivos ou resultados mudarem.
+- Siga a estrutura atual do relatório: mantenha o enunciado geral do item 1 e documente cada item em sua própria seção, organizando a metodologia, os resultados e sua análise em subseções correspondentes.
+- Consulte o enunciado no PDF e descreva com precisão a metodologia aplicada, os resultados obtidos e sua análise. Registre limitações ou partes do enunciado ainda não atendidas; não apresente como concluído o que não foi realizado.
+- Descreva no relatório a metodologia e os detalhes de implementação necessários para que os procedimentos sejam compreensíveis e reproduzíveis, incluindo bibliotecas utilizadas, parâmetros, filtros, critérios de seleção e etapas de cálculo. Apresente esses detalhes em prosa, sem citar arquivos de código ou dados, nomes de funções e variáveis, nem chamadas entre arquivos. Organize cada item em metodologia, resultados e análise; atualize essas seções quando houver mudanças relevantes.
 - Ao criar ou alterar documentação do repositório, registre a mudança em uma seção apropriada do `RELATORIO.md`, sem apagar nem contradizer o histórico dos itens.
 
 ## Google Colab
