@@ -7,6 +7,7 @@ import pandas as pd
 from item_a import utils as utils_a
 from item_b import utils as utils_b
 from item_c import utils as utils_c
+from item_d import utils as utils_d
 
 # Item a do trabalho: interpolar o sinal de ECG de 1000 para 4000 amostras/s e plotar o gráfico.
 arquivo_entrada = "ECG_XYZ.txt(fs=1000Hz)"
@@ -119,3 +120,41 @@ intervalos_rr = utils_c.calcular_intervalos_rr(tempos_picos_r)
 intervalos_rr.to_csv(diretorio_item_c / "intervalos_rr.csv", index=False)
 utils_c.plotar_intervalos_rr(intervalos_rr, diretorio_item_c / "RR_x_Tempo.png")
 print(f"Item c concluído: {len(intervalos_rr)} intervalos RR calculados.")
+
+# Item d: medir QRS, QT e QTc nos três canais e no complexo PQRST médio.
+diretorio_item_d = Path("item_d")
+diretorio_item_d.mkdir(parents=True, exist_ok=True)
+medidas_qt = utils_d.medir_intervalos_qt(
+    sinais_item_b,
+    canais_item_b,
+    picos_detectados,
+    frequencia_nova,
+)
+medidas_qt.to_csv(diretorio_item_d / "intervalos_qt_por_batimento.csv", index=False)
+resumo_qt = utils_d.resumir_medidas_qt(medidas_qt)
+resumo_qt.to_csv(diretorio_item_d / "resumo_intervalos_qt.csv", index=False)
+
+medidas_complexo_medio = utils_d.medir_intervalos_no_complexo_medio(
+    sinal_medio,
+    canais_item_b,
+    frequencia_nova,
+    amostras_antes,
+)
+rr_medio_ms = np.mean(np.diff(picos_detectados)) * 1000 / frequencia_nova
+qtcs_complexo_medio = utils_d.calcular_qtc(
+    medidas_complexo_medio["QT_ms"].to_numpy(),
+    np.full(len(medidas_complexo_medio), rr_medio_ms),
+)
+medidas_complexo_medio = pd.concat(
+    [medidas_complexo_medio, qtcs_complexo_medio], axis=1
+)
+medidas_complexo_medio.insert(1, "RRMedio_ms", rr_medio_ms)
+medidas_complexo_medio.to_csv(
+    diretorio_item_d / "intervalos_qt_complexo_medio.csv", index=False
+)
+utils_d.plotar_qt_por_tempo(medidas_qt, diretorio_item_d / "QT_e_QTc_por_batimento.png")
+print(
+    "Item d concluído: "
+    f"{medidas_qt['QT_ms'].notna().sum()} medidas QT válidas de "
+    f"{len(medidas_qt)} tentativas nos três canais."
+)

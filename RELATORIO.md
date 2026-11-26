@@ -54,9 +54,31 @@ Foram calculados 292 intervalos RR a partir dos 293 picos detectados. Os interva
 
 ![Intervalos RR consecutivos em função do tempo](item_c/RR_x_Tempo.png)
 
-## Item d
+## Item d — Intervalos QT, QTc e duração do QRS
 
-Ainda não implementado.
+> Desenvolva um algoritmo (utilizando qualquer conteúdo teórico estudado na disciplina) para detectar todos os intervalos QT nos três canais do ECG. Depois calcule o QT corrigido (QTc) usando os métodos disponíveis na literatura (mas é preciso comparar com a correção definida por Bazett). Determine também a duração do QRS, o intervalo QT e QTc para o sinal promediado.
+
+### Metodologia
+
+Foram reutilizados os picos R identificados no item b, comuns aos três canais. Cada canal foi processado de modo independente por um filtro Butterworth passa-banda de fase nula, de ordem 3, com cortes em 0,5 e 40 Hz, para reduzir a deriva de linha de base e o ruído de alta frequência sem deslocar os marcadores temporais.
+
+O início e o fim de cada QRS foram delimitados pela magnitude da derivada temporal do sinal filtrado, suavizada por média móvel de 10 ms. O limiar de atividade combinou quatro desvios robustos acima do ruído medido entre 250 e 120 ms antes de R e 8% do máximo de atividade na janela de -120 a +160 ms em torno de R. O segmento de atividade conectado mais próximo de R foi adotado como QRS. Delineações cuja duração estivesse fora de 40 a 200 ms foram rejeitadas.
+
+O fim da onda T foi determinado pelo método do limiar da derivada. Após o fim do QRS, procurou-se o máximo da onda T entre 40 ms após o QRS e o menor dos limites de 600 ms após R ou 100 ms antes do próximo R. A polaridade foi inferida pelo maior desvio em relação à linha de base. A derivada, suavizada em 8 ms e orientada para a porção descendente de T, foi comparada a um limiar formado pelo ruído pré-QRS mais três desvios robustos, limitado inferiormente a 5% da maior inclinação da descida. O primeiro trecho de 20 ms continuamente abaixo desse limiar definiu o fim de T. O intervalo QT foi calculado entre o início de QRS e esse marcador.
+
+Para cada QT válido, empregou-se o RR precedente. Foram calculadas as correções de Bazett, QTc = QT / √RR; Fridericia, QTc = QT / ∛RR; e Framingham, QTc = QT + 0,154 × (1 - RR), usando segundos nas fórmulas. No complexo médio, foi utilizado o RR médio de 1021,04 ms para as três correções. O mesmo procedimento de delineação foi aplicado separadamente aos seus três canais.
+
+### Resultados
+
+Foram avaliadas 879 combinações de batimento e canal. Obtiveram-se 875 intervalos QT válidos: os três primeiros complexos não dispunham da janela pré-R integral para estimativa de ruído e uma delineação do canal X foi rejeitada por resultar em QRS de 279,75 ms. As médias dos intervalos foram, respectivamente para os canais X, Y e Z: QRS de 80,36, 91,27 e 109,89 ms; QT de 389,99, 380,40 e 388,32 ms; QTc de Bazett de 385,95, 376,69 e 384,56 ms; QTc de Fridericia de 387,27, 377,90 e 385,79 ms; e QTc de Framingham de 386,58, 377,16 e 385,08 ms.
+
+No complexo médio, os valores foram: QRS de 80,25, 91,25 e 109,25 ms; QT de 408,50, 396,75 e 411,25 ms; QTc de Bazett de 404,27, 392,64 e 406,99 ms; QTc de Fridericia de 405,67, 394,01 e 408,41 ms; e QTc de Framingham de 405,26, 393,51 e 408,01 ms, para X, Y e Z, respectivamente.
+
+### Análise
+
+As três correções produziram valores próximos porque o RR médio foi próximo de um segundo, condição em que as fórmulas convergem. Bazett apresentou valores ligeiramente menores que Fridericia e Framingham neste registro. As diferenças entre canais refletem as diferentes projeções do vetor cardíaco e, principalmente, a dificuldade inerente de definir o retorno de T à linha de base em cada derivação. O método de limiar da derivada evita definir esse ponto diretamente pela amplitude, mas ainda depende de boa relação sinal-ruído e pode falhar em ondas T muito pequenas, bifásicas ou fundidas com outra onda; por isso, as rejeições foram mantidas explicitamente nos resultados.
+
+![Intervalos QT e QTc de Bazett por batimento nos três canais](item_d/QT_e_QTc_por_batimento.png)
 
 ## Item e
 
