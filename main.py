@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 from item_a import utils as utils_a
 from item_b import utils as utils_b
+from item_c import utils as utils_c
 
 # Item a do trabalho: interpolar o sinal de ECG de 1000 para 4000 amostras/s e plotar o gráfico.
 arquivo_entrada = "ECG_XYZ.txt(fs=1000Hz)"
@@ -109,3 +110,12 @@ print(
     f"{len(batimentos_aceitos)} complexos incluídos e "
     f"{quantidade_rejeitada} rejeitados."
 )
+
+# Item c do trabalho: calcular e plotar os intervalos RR dos picos do item b.
+diretorio_item_c = Path("item_c")
+diretorio_item_c.mkdir(parents=True, exist_ok=True)
+tempos_picos_r = dados_interpolados.loc[picos_detectados, "SamplingInterval"].to_numpy()
+intervalos_rr = utils_c.calcular_intervalos_rr(tempos_picos_r)
+intervalos_rr.to_csv(diretorio_item_c / "intervalos_rr.csv", index=False)
+utils_c.plotar_intervalos_rr(intervalos_rr, diretorio_item_c / "RR_x_Tempo.png")
+print(f"Item c concluído: {len(intervalos_rr)} intervalos RR calculados.")

@@ -5,7 +5,7 @@ Este repositório contém o trabalho cujos enunciados estão no arquivo **`PDS_H
 ## Organização do projeto
 
 - `main.py`: código principal do trabalho. Ao ser executado, carrega os dados e chama as funções correspondentes a cada item.
-- `item_X/`: pasta destinada às funções específicas e aos arquivos gerados para o item `X`.
+- `item_<X>/`: pastas destinadas às funções específicas e aos arquivos gerados para o item `X`.
 - `requirements.txt`: dependências Python do projeto.
 - `PDS_Homework202xB.pdf`: enunciados do trabalho.
 - `ECG_XYZ.txt(fs=1000Hz)`: dados originais do sinal de ECG.

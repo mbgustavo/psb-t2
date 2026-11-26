@@ -61,6 +61,27 @@ Foi adicionada a dependência `scipy` em [`requirements.txt`](requirements.txt) 
 
 ## Item c
 
+> Determine em milissegundos todos os intervalos RR consecutivos do registro e faça o gráfico RR x Tempo.
+
+### Dados de entrada
+
+Foram utilizados os picos R detectados no item b a partir do sinal interpolado a 4000 Hz. Os instantes dos picos são obtidos na coluna `SamplingInterval` de `dados_interpolados` em [`main.py`](main.py).
+
+### O que foi implementado
+
+As funções específicas estão em [`item_c/utils.py`](item_c/utils.py). A função `calcular_intervalos_rr` calcula a diferença entre cada par consecutivo de picos R e converte o resultado para milissegundos. Cada intervalo é associado ao ponto médio temporal entre seus dois picos delimitadores, o que é usado no gráfico RR x Tempo produzido por `plotar_intervalos_rr`.
+
+### Resultados gerados
+
+Foram calculados 292 intervalos RR a partir dos 293 picos detectados no item b. Os valores variam de 705,25 ms a 1294,75 ms.
+
+- [`item_c/intervalos_rr.csv`](item_c/intervalos_rr.csv): tempos inicial, final e médio de cada par de picos, além do intervalo RR em milissegundos.
+- [`item_c/RR_x_Tempo.png`](item_c/RR_x_Tempo.png): gráfico de todos os intervalos RR consecutivos em função do tempo.
+
+#### Gráfico gerado
+
+![Intervalos RR consecutivos em função do tempo](item_c/RR_x_Tempo.png)
+
 ## Item d
 
 ## Item e
