@@ -1,0 +1,2 @@
+FrequenciaAmostragem_Hz,ComplexosDetectados,ComplexosIncluidos,ComplexosRejeitados,RejeitadosPorBorda,RejeitadosPorMorfologia,RMSResidual_X,RMSResidual_Y,RMSResidual_Z
+4000,293,281,12,1,11,0.10591639096452686,0.21416445930489955,0.10577187074573041

@@ -26,6 +26,39 @@ A função `plotar_sinal_ecg` gera, no intervalo de 180 a 190 segundos (3:00 a 3
 
 ## Item b
 
+> Desenvolva um algoritmo para detectar cada batimento, enquadrar, alinhar e promediar o complexo PQRST; apresentando o sinal promediado, número de complexos incluídos na promediação, número de rejeitados, estimativa do ruído residual, calcular o vetor magnitude utilizando as seguintes frequências passa-alta em 25, 40 e 80 Hz.
+
+### Dados de entrada
+
+O sinal de entrada do item b é o resultado interpolado do item a, [`item_a/ECG_XYZ_4000Hz.csv`](item_a/ECG_XYZ_4000Hz.csv), com frequência de amostragem definida explicitamente como 4000 Hz em [`main.py`](main.py). Os canais ortogonais considerados são `ChXGain5000`, `ChYGain5000` e `ChZGain5000`; a coluna `RefChXGain1000Inverted` é uma referência e não entra no cálculo do vetor magnitude.
+
+### Método implementado
+
+As funções do item estão em [`item_b/utils.py`](item_b/utils.py), e o encadeamento da análise e a gravação das saídas são feitos diretamente por [`main.py`](main.py). Para localizar os batimentos, o canal Y recebe um filtro Butterworth passa-banda com fase nula. A ordem dos filtros passa-banda e passa-alta é parametrizável e tem valor padrão 3. Na detecção, os cortes do passa-banda (5 e 25 Hz), o intervalo mínimo entre picos (400 ms) e o fator de proeminência (2 desvios-padrão) também são parâmetros com esses valores como padrão.
+
+Cada batimento é enquadrado de 250 ms antes a 550 ms depois do pico R. Como os recortes são centrados no máximo R do sinal filtrado, ficam temporalmente alinhados. Os batimentos sem janela completa são rejeitados. Para a rejeição morfológica, cada janela multicanal é centralizada, normalizada e correlacionada com o molde mediano; são aceitas correlações de pelo menos 0,90 e acima do limite inferior de Tukey. O limite mínimo de correlação é parametrizável, com valor padrão 0,90. O complexo promediado é a média amostral dos complexos aceitos.
+
+A estimativa de ruído residual é o valor RMS da diferença entre cada complexo aceito e o complexo médio, calculada separadamente para X, Y e Z. Para cada corte de 25, 40 e 80 Hz, os três canais recebem um passa-alta Butterworth de ordem 3 com fase nula; os complexos aceitos são novamente promediados e o vetor magnitude é calculado como `sqrt(X² + Y² + Z²)` em cada amostra.
+
+### Resultados gerados
+
+A execução atual, sobre os dados interpolados a 4000 Hz, detectou 293 complexos, dos quais 281 foram incluídos na promediação e 12 rejeitados (1 por borda e 11 por morfologia). Os RMS residuais foram 0,1059 no canal X, 0,2142 no canal Y e 0,1058 no canal Z. Esses valores e as contagens completas estão em [`item_b/resumo_item_b.csv`](item_b/resumo_item_b.csv).
+
+- [`item_b/complexo_pqrst_promediado.csv`](item_b/complexo_pqrst_promediado.csv): sinal médio dos canais X, Y e Z, com o tempo relativo ao pico R.
+- [`item_b/vetores_magnitude.csv`](item_b/vetores_magnitude.csv): vetores magnitude médios para os passa-altas de 25, 40 e 80 Hz.
+- [`item_b/complexo_pqrst_promediado.png`](item_b/complexo_pqrst_promediado.png): gráfico dos complexos PQRST médios e respectivos RMS residuais.
+- [`item_b/vetores_magnitude_passa_alta.png`](item_b/vetores_magnitude_passa_alta.png): comparação gráfica dos três vetores magnitude.
+
+#### Gráficos gerados
+
+![Complexos PQRST promediados](item_b/complexo_pqrst_promediado.png)
+
+![Vetores magnitude com filtros passa-alta](item_b/vetores_magnitude_passa_alta.png)
+
+### Dependência adicionada
+
+Foi adicionada a dependência `scipy` em [`requirements.txt`](requirements.txt) para os filtros digitais Butterworth e a detecção de picos.
+
 ## Item c
 
 ## Item d
