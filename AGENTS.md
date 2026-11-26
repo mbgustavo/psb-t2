@@ -13,6 +13,7 @@
 
 - Toda função criada deve ter uma docstring que descreva seu propósito e os parâmetros recebidos. Documente também o valor retornado quando houver retorno.
 - Use nomes de funções, variáveis e comentários em português, seguindo o padrão existente no projeto.
+- Mantenha em português toda a documentação do repositório, incluindo README, relatório, comentários e textos explicativos de notebooks.
 
 ## Relatório
 
@@ -21,3 +22,8 @@
 - Consulte o enunciado no PDF e descreva com precisão o que foi implementado. Registre limitações ou partes do enunciado ainda não atendidas; não apresente como concluído o que os arquivos atuais não realizam.
 - Inclua referências aos arquivos de código, dados de entrada e resultados relevantes. Atualize o relatório quando esses arquivos ou resultados mudarem.
 - Ao criar ou alterar documentação do repositório, registre a mudança em uma seção apropriada do `RELATORIO.md`, sem apagar nem contradizer o histórico dos itens.
+
+## Google Colab
+
+- A skill local para converter o projeto em notebook está em `.agents/skills/python-to-colab-notebook/SKILL.md`. Consulte-a quando a tarefa pedir uma versão Google Colab, mantendo um bloco de funções e outro de execução para cada item e exibindo gráficos no notebook sem salvá-los em arquivos.
+- A skill local para sincronizar alterações funcionais de um notebook de volta ao projeto Python está em `.agents/skills/update-python-from-notebook/SKILL.md`. Preserve diferenças próprias do Colab, como instalação no runtime, upload, estado entre células e exibição inline de gráficos.

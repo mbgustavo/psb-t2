@@ -41,3 +41,9 @@ A função `plotar_sinal_ecg` gera, no intervalo de 180 a 190 segundos (3:00 a 3
 ## Padrões do repositório
 
 As instruções para organização do código, documentação das funções e atualização deste relatório estão registradas em [`AGENTS.md`](AGENTS.md).
+
+A skill [`python-to-colab-notebook`](.agents/skills/python-to-colab-notebook/SKILL.md) orienta a conversão do código para um notebook do Google Colab, com as funções de cada item separadas das células de execução e os gráficos exibidos diretamente no notebook.
+
+A skill [`update-python-from-notebook`](.agents/skills/update-python-from-notebook/SKILL.md) orienta a sincronização das mudanças funcionais do notebook de volta aos módulos Python, ignorando adaptações exclusivas do Colab.
+
+A documentação do projeto, incluindo os textos explicativos dos notebooks, deve ser mantida em português.

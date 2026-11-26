@@ -9,6 +9,7 @@ Este repositório contém o trabalho cujos enunciados estão no arquivo **`PDS_H
 - `requirements.txt`: dependências Python do projeto.
 - `PDS_Homework202xB.pdf`: enunciados do trabalho.
 - `ECG_XYZ.txt(fs=1000Hz)`: dados originais do sinal de ECG.
+- `RELATORIO.md`: Relatório do que foi feito no trabalho.
 
 À medida que novos itens forem implementados, suas funções e arquivos de resultado devem ficar em pastas próprias, seguindo o padrão `item_X/`.
 
