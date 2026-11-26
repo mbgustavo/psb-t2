@@ -4,6 +4,19 @@ import pandas as pd
 import numpy as np
 
 def interpolar_dados(dados, arquivo, frequencia):
+    """Interpola os canais do arquivo de ECG para uma nova frequência de amostragem.
+
+    Args:
+        dados: DataFrame de origem (mantido por compatibilidade; os dados são
+            carregados de ``arquivo`` dentro desta função).
+        arquivo: Caminho do arquivo tabulado com ``SamplingInterval`` e os
+            canais do ECG.
+        frequencia: Frequência de amostragem desejada, em amostras por segundo.
+
+    Returns:
+        DataFrame com a coluna de tempo e os canais interpolados pela função
+        ``numpy.interp``.
+    """
     dados = pd.read_csv(arquivo, sep="\t")
     tempo_original = dados["SamplingInterval"].to_numpy()
     passo_novo = 1 / frequencia
@@ -24,7 +37,16 @@ def interpolar_dados(dados, arquivo, frequencia):
     return pd.DataFrame(resultado)
 
 def plotar_sinal_ecg(tempo_inicio, tempo_fim, frequencia, dados, arquivo):
-    """Plota os canais no intervalo informado, cada canal com uma cor."""
+    """Plota cada canal do ECG em um subplot, usando uma cor diferente.
+
+    Args:
+        tempo_inicio: Início do intervalo a plotar, em segundos.
+        tempo_fim: Fim do intervalo a plotar, em segundos.
+        frequencia: Frequência de amostragem do sinal, em amostras por segundo;
+            é exibida no título do gráfico.
+        dados: DataFrame com ``SamplingInterval`` e os canais interpolados.
+        arquivo: Caminho do arquivo SVG onde o gráfico será salvo.
+    """
     tempo = dados["SamplingInterval"].to_numpy()
     mascara = (tempo >= tempo_inicio) & (tempo <= tempo_fim)
     canais = [coluna for coluna in dados.columns if coluna != "SamplingInterval"]
