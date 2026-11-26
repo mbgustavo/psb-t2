@@ -1,6 +1,4 @@
-# Relatório do trabalh
-
-## Enunciado do item 1
+# Relatório do trabalho
 
 [`PDS_Homework202xB.pdf`](PDS_Homework202xB.pdf)
 
