@@ -78,6 +78,8 @@ No complexo médio, os valores foram: QRS de 80,25, 91,25 e 109,25 ms; QT de 408
 
 As três correções produziram valores próximos porque o RR médio foi próximo de um segundo, condição em que as fórmulas convergem. Bazett apresentou valores ligeiramente menores que Fridericia e Framingham neste registro. As diferenças entre canais refletem as diferentes projeções do vetor cardíaco e, principalmente, a dificuldade inerente de definir o retorno de T à linha de base em cada derivação. O método de limiar da derivada evita definir esse ponto diretamente pela amplitude, mas ainda depende de boa relação sinal-ruído e pode falhar em ondas T muito pequenas, bifásicas ou fundidas com outra onda; por isso, as rejeições foram mantidas explicitamente nos resultados.
 
+O aumento observado nos intervalos QT e QTc dos complexos promediados, em comparação com as médias individuais dos batimentos, pode estar relacionado ao processo de promediação, que reduz a influência de ruídos e variações morfológicas entre os batimentos, tornando as transições das ondas P, QRS e T mais definidas. Essa alteração pode influenciar a identificação dos pontos de início e término das ondas, especialmente do término da onda T, resultando em intervalos QT ligeiramente maiores. O efeito foi consistente nos três canais, com aumentos de aproximadamente 18,51 ms no canal X, 16,35 ms no canal Y e 22,93 ms no canal Z. Portanto, embora a promediação favoreça a delineação ao melhorar a relação sinal-ruído, os resultados indicam que as medidas obtidas no complexo médio não são necessariamente equivalentes à média das medidas individuais.
+
 ![Intervalos QT e QTc de Bazett por batimento nos três canais](item_d/QT_e_QTc_por_batimento.png)
 
 ## Item e

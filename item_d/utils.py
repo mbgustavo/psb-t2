@@ -7,7 +7,13 @@ from scipy.ndimage import label
 from scipy.signal import butter, sosfiltfilt
 
 
-def filtrar_ecg_para_delineacao(sinal, frequencia_amostragem, ordem=3):
+def filtrar_ecg_para_delineacao(
+        sinal,
+        frequencia_amostragem,
+        ordem=3,
+        frequencia_inicio=0.5,
+        frequencia_fim=40
+    ):
     """Remove deriva de linha de base e ruído de alta frequência do ECG.
 
     Args:
@@ -16,11 +22,11 @@ def filtrar_ecg_para_delineacao(sinal, frequencia_amostragem, ordem=3):
         ordem: Ordem do filtro Butterworth.
 
     Returns:
-        Sinal filtrado por passa-banda de 0,5 a 40 Hz, sem atraso de fase.
+        Sinal filtrado por passa-banda de frequencia_inicio a frequencia_fim Hz, sem atraso de fase.
     """
     filtro = butter(
         ordem,
-        [0.5, 40],
+        [frequencia_inicio, frequencia_fim],
         btype="bandpass",
         fs=frequencia_amostragem,
         output="sos",
@@ -40,20 +46,6 @@ def _desvio_padrao_robusto(valores):
     valores = np.asarray(valores, dtype=float)
     mediana = np.median(valores)
     return 1.4826 * np.median(np.abs(valores - mediana))
-
-
-def _janela(indice_inicial, indice_final, quantidade_amostras):
-    """Limita uma janela de índices aos limites válidos do sinal.
-
-    Args:
-        indice_inicial: Primeiro índice desejado.
-        indice_final: Índice final exclusivo desejado.
-        quantidade_amostras: Comprimento do sinal.
-
-    Returns:
-        Objeto ``slice`` correspondente à parte válida da janela.
-    """
-    return slice(max(0, indice_inicial), min(quantidade_amostras, indice_final))
 
 
 def _suavizar_media_movel(sinal, amostras_janela):
@@ -96,10 +88,9 @@ def detectar_limites_qrs(sinal_filtrado, pico_r, frequencia_amostragem, atividad
         atividade = _suavizar_media_movel(
             np.abs(derivada), round(0.010 * frequencia_amostragem)
         )
-    janela_ruido = _janela(
-        pico_r - round(0.250 * frequencia_amostragem),
-        pico_r - round(0.120 * frequencia_amostragem),
-        quantidade,
+    janela_ruido = slice(
+        max(0, pico_r - round(0.250 * frequencia_amostragem)),
+        min(quantidade, pico_r - round(0.120 * frequencia_amostragem))
     )
     ruido = atividade[janela_ruido]
     if len(ruido) < 5:
